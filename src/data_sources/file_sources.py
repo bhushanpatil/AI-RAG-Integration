@@ -4,7 +4,7 @@ File-based data sources: Text, PDF, DOCX, PPT, CSV
 
 from typing import List, Union
 from pathlib import Path
-from langchain.schema import Document
+from langchain_core.documents import Document
 from langchain_community.document_loaders import TextLoader
 from .base import BaseDataSource
 
@@ -30,7 +30,7 @@ class TextFileSource(BaseDataSource):
         for docs in self.documents:
             docs.metadata.update({
                 "source_type": "text",
-                "file_name": self.file_path.name 
+                "file_name": self.file_path.name,
                 "file_path": str(self.file_path)
             })
             

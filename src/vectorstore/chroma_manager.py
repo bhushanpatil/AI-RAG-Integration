@@ -4,7 +4,7 @@ from langchain.embeddings.base import Embeddings
 from pathlib import Path
 from langchain_text_splitters.character import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import Chroma
-from langchain.schema import Document
+from langchain_core.documents import Document
 
 class ChromaManager:
     """ Manage ChromaDB Vector store operations """
@@ -44,7 +44,7 @@ class ChromaManager:
         self.vectorstore = None
         self._init_vectorstore()
         
-    def __init_vectorstore(self):
+    def _init_vectorstore(self):
         """ Initialise or load existing vector store """
         try:  
             self.vectorstore = Chroma(
@@ -61,17 +61,19 @@ class ChromaManager:
                 persist_directory = str(self.persist_dir_path),
             )
     
-    def add_document(self, documents: List[Document]):
+    def add_documents(self, documents: List[Document]):
         """ Add documents to chroma db vector store """
 
         split_docs = self.text_splitter.split_documents(documents=documents)
         print(f"Split {len(documents)} documents into {len(split_docs)} chunks")
         
         #add vector to store
-        self.vectorstore.add_documents(split_docs)
+        doc_ids = self.vectorstore.add_documents(split_docs)
         
         #vector store persist
         self.vectorstore.persist()
+        return doc_ids   
+    
         
         
     def similarity_search(self, query:str, 
@@ -88,3 +90,8 @@ class ChromaManager:
         """Manually persist the vector store"""
         self.vectorstore.persist()
         print("Vector store persisted successfully")
+        
+    def as_retriever(self, search_type: str = "similarity", k:int = 5):
+        return self.vectorstore.as_retriever(search_type=search_type,search_kwargs={
+            "k": k
+        })
