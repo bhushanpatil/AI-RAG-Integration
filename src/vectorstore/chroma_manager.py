@@ -95,3 +95,9 @@ class ChromaManager:
         return self.vectorstore.as_retriever(search_type=search_type,search_kwargs={
             "k": k
         })
+        
+    def delete_collection(self):
+        """Delete the entire collection"""
+        self.vectorstore.delete_collection()
+        print(f"Deleted collection: {self.collection_name}")
+        self._init_vectorstore()
