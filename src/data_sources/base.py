@@ -5,7 +5,7 @@ Base class for all data sources
 
 from abc import ABC, abstractmethod
 from typing import List, Dict, Any
-from langchain.schema import Document
+from langchain_core.documents import Document
 class BaseDataSource(ABC):
     """Abstract base class for all data sources"""
     def __init__(self, source_name: str):
